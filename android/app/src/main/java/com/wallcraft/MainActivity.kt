@@ -1,5 +1,6 @@
 package com.wallcraft
 
+import android.os.Bundle
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate
 import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.fabricEnabled
@@ -19,4 +20,15 @@ class MainActivity : ReactActivity() {
    */
   override fun createReactActivityDelegate(): ReactActivityDelegate =
       DefaultReactActivityDelegate(this, mainComponentName, fabricEnabled)
+
+  /**
+   * Fix: prevent react-native-screens from restoring screen fragments after the app
+   * is killed and relaunched (e.g. when applying a wallpaper). Without this, the
+   * ScreenFragment constructor throws IllegalStateException on restore.
+   * See: https://github.com/software-mansion/react-native-screens/issues/17
+   */
+  override fun onSaveInstanceState(outState: Bundle) {
+    super.onSaveInstanceState(outState)
+    outState.clear()
+  }
 }
